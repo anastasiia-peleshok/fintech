@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="6.35.0">
+    <rule ref="rulesets/java/basic.xml"/>
+    <rule ref="rulesets/java/unusedcode.xml"/>
+</pmd>
