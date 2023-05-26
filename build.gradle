@@ -6,15 +6,16 @@ plugins {
     id 'pmd'
     id 'jacoco'
     id 'org.liquibase.gradle' version '2.0.4'
+}
 
-}
 repositories {
-	mavenCentral()
-	mavenLocal()
+    mavenCentral()
 }
+
 ext {
     mapstructVersion = "1.5.5.Final"
 }
+
 group = 'com.fintech'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
@@ -25,22 +26,15 @@ configurations {
     }
 
 }
+
 checkstyle {
     toolVersion '10.3.3'
     configFile file("config/checkstyle/checkstyle.xml")
 }
-checkstyleMain {
-    source = 'src/main/java'
-}
-checkstyleTest {
-    source = 'src/test/java'
-}
+
 pmd {
-    // Шлях до файлу конфігурації PMD
     ruleSetConfig = resources.text.fromFile("config/pmd/pmd.xml")
-    // Шляхи до вихідних файлів, які будуть аналізуватися
     sourceSets = [sourceSets.main]
-    // Виключити окремі директорії або файли з аналізу
     ignoreFailures = false
 }
 
@@ -56,30 +50,29 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-    implementation 'org.springframework.boot:spring-boot-starter-logging'
-
     liquibaseRuntime 'org.liquibase:liquibase-core:4.20.0'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.3'
     liquibaseRuntime 'mysql:mysql-connector-java:8.0.33'
-
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework:spring-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {
     finalizedBy jacocoTestReport // report is always generated after tests run
 }
+
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
     reports {
@@ -92,6 +85,7 @@ jacocoTestReport {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
 tasks.withType(Checkstyle) {
     reports {
         xml.enabled false
