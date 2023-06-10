@@ -2,96 +2,61 @@ package com.fintech.demo.rest;
 
 import com.fintech.demo.entity.Account;
 import com.fintech.demo.service.AccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/accounts/")
+@RequiredArgsConstructor
 public class AccountRestController {
-    private AccountService accountService;
 
-    @Autowired
-    public AccountRestController(AccountService accountService) {
-        this.accountService = accountService;
+    private final AccountService accountService;
+
+    @GetMapping(value = "{accountId}")
+    @ResponseBody
+    public ResponseEntity<Account> getAccount(@PathVariable long accountId) throws IllegalArgumentException {
+        return ResponseEntity.ok(accountService.getAccountById(accountId).get());
     }
 
-    @GetMapping("{accountId}")
+    @GetMapping()
     @ResponseBody
-    public ResponseEntity<String> getAccounts(@PathVariable long accountId) {
-        if (accountService.getAccountById(accountId).isEmpty()) {
-            return new ResponseEntity("Account with id " + accountId + " is not found", HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity(accountService.getAccountById(accountId).get(), HttpStatus.OK);
-        }
+    public ResponseEntity<List<Account>> getAccounts() {
 
+        return ResponseEntity.ok(accountService.getAccounts());
     }
 
-    @GetMapping("accounts")
+    @PostMapping()
     @ResponseBody
-    public ResponseEntity<String> getAccounts() {
-        return new ResponseEntity(accountService.getAccounts(), HttpStatus.OK);
-
-    }
-
-    @PostMapping("newAccount")
-    @ResponseBody
-    public ResponseEntity<String> saveAccount(@RequestParam Account newAccount) {
-        if (accountService.getAccounts().stream().map(a -> a.getIdentifier()).anyMatch(a -> a.equals(newAccount.getIdentifier()))) {
-            return new ResponseEntity("Account with identifier " + newAccount.getIdentifier() + " is already exist", HttpStatus.BAD_REQUEST);
-        } else if (accountService.getAccounts().stream().map(a -> a.getPassportNumber()).anyMatch(a -> a.equals(newAccount.getPassportNumber()))) {
-            return new ResponseEntity("Account with  passport number " + newAccount.getPassportNumber() + " is already exist", HttpStatus.BAD_REQUEST);
-        } else {
-            Account theAccount = accountService.saveAccount(newAccount);
-            return new ResponseEntity("Account with id " + theAccount.getId() + " was successfully created", HttpStatus.CREATED);
-        }
-
+    public ResponseEntity<Account> saveAccount(@RequestBody Account newAccount) throws IllegalArgumentException {
+        return ResponseEntity.ok(accountService.saveAccount(newAccount));
     }
 
     @DeleteMapping("{accountId}")
     @ResponseBody
-    public ResponseEntity<String> deleteAccount(@PathVariable long accountId) {
-        if (accountService.getAccountById(accountId).isEmpty()) {
-            return new ResponseEntity("Account with id " + accountId + " is not found", HttpStatus.NOT_FOUND);
-        } else {
-            accountService.deleteAccount(accountId);
-            return new ResponseEntity("Account with id " + accountId + " was successfully deleted", HttpStatus.OK);
-        }
+    public ResponseEntity<Void> deleteAccount(@PathVariable long accountId) throws IllegalArgumentException {
+        accountService.deleteAccount(accountId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("{accountId}")
     @ResponseBody
-    public ResponseEntity<Account> updateCreditLimit(@PathVariable long accountId, @RequestParam Account theAccount) {
-        return accountService.getAccountById(accountId)
-                .map(savedAccount -> {
-                    savedAccount.setFirstName(theAccount.getFirstName());
-                    savedAccount.setLastName(theAccount.getLastName());
-                    savedAccount.setIdentifier(theAccount.getIdentifier());
-                    savedAccount.setPassportNumber(theAccount.getPassportNumber());
-                    savedAccount.setAnnualIncome(theAccount.getAnnualIncome());
-
-                    Account updatedAccount = accountService.updateEmployee(savedAccount);
-                    return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Account> updateAccount(@PathVariable long accountId, @RequestBody Account theAccount) throws IllegalArgumentException {
+        return ResponseEntity.ok(accountService.updateAccount(accountId, theAccount));
+//        Account updatedAccount=accountService.getAccountById(accountId).get();
+//        return new ResponseEntity<>(accountService.updateAccount(updatedAccount), HttpStatus.OK);
     }
 
-    @PutMapping("creditLimitUpdate/{accountId}")
+    @PutMapping("{accountId}/credit-limit")
     @ResponseBody
-    public ResponseEntity<String> updateCreditLimit(@PathVariable long accountId, @RequestParam BigDecimal requestedCreditLimit) {
-        Optional<Account> theAccount = accountService.getAccountById(accountId);
-        if (theAccount.isEmpty()) {
-            return new ResponseEntity("Account with id " + accountId + " is not found", HttpStatus.NOT_FOUND);
-        } else if (theAccount.get().getAnnualIncome().divide(BigDecimal.valueOf(12)).compareTo(requestedCreditLimit) < 0) {
-            return new ResponseEntity("Credit limit exceed monthly income. Operation is declined!", HttpStatus.NOT_MODIFIED);
-        } else {
-            theAccount.get().setCreditLimit(requestedCreditLimit);
-            accountService.updateEmployee(theAccount.get());
-            return new ResponseEntity("Credit limit was successfully changed", HttpStatus.OK);
-        }
+    public ResponseEntity<Account> updateCreditLimit(@PathVariable long accountId, @RequestParam BigDecimal requestedCreditLimit) throws IllegalArgumentException {
+        return ResponseEntity.ok(accountService.updateCreditLimit(accountId, requestedCreditLimit));
     }
 
 
