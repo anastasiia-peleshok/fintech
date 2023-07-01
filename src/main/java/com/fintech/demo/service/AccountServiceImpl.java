@@ -32,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Optional<Account> getAccountById(long theId) throws IllegalArgumentException {
+    public Optional<Account> getAccountById(long theId){
         if (accountRepository.findById(theId).isEmpty()) {
             throw new IllegalArgumentException("Account with id" + theId + " is not found");
         }
@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public Account saveAccount(Account newAccount) throws IllegalArgumentException {
+    public Account saveAccount(Account newAccount) {
         if (accountRepository.findById(newAccount.getId()).isPresent()) {
             throw new IllegalArgumentException("Account with id " + newAccount.getId() + " is already exist");
         } else if (accountRepository.existsByIdentifier(newAccount.getIdentifier())) {
@@ -52,18 +52,11 @@ public class AccountServiceImpl implements AccountService {
             Account theAccount = accountRepository.save(newAccount);
             return theAccount;
         }
-
-//        Optional<Account> savedAccount = accountRepository.findById(newAccount.getId());
-//        if(savedAccount.isPresent()){
-//            throw new IllegalArgumentException("Employee already exist with given email:" + newAccount.getId());
-//        }
-//        return accountRepository.save(newAccount);
-
     }
 
     @Transactional
     @Override
-    public Account updateAccount(long accountId, Account updatedAccount) throws IllegalArgumentException {
+    public Account updateAccount(long accountId, Account updatedAccount)  {
 
         return accountRepository.findById(accountId).map(savedAccount -> {
                     savedAccount.setFirstName(updatedAccount.getFirstName());
@@ -79,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateCreditLimit(long accountId, BigDecimal requestedCreditLimit) throws IllegalArgumentException, CreditLimitExceedIncomeException {
+    public Account updateCreditLimit(long accountId, BigDecimal requestedCreditLimit)  {
         Optional<Account> theAccount = accountRepository.findById(accountId);
         if (theAccount.isEmpty()) {
             throw new IllegalArgumentException("Account with id " + accountId + " is not found");

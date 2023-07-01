@@ -10,14 +10,14 @@ import java.util.Optional;
 public interface AccountService {
     public List<Account> getAccounts();
 
-    public Optional<Account> getAccountById(long theId) throws IllegalArgumentException;
+    public Optional<Account> getAccountById(long theId);
 
-    public Account saveAccount(Account theAccount) throws IllegalArgumentException;
+    public Account saveAccount(Account theAccount);
 
     public void deleteAccount(long theId);
 
-    Account updateAccount(long accountId,Account updatedAccount) throws IllegalArgumentException;
-    Account updateCreditLimit(long accountId, BigDecimal requestedCreditLimit) throws IllegalArgumentException, CreditLimitExceedIncomeException;
+    Account updateAccount(long accountId,Account updatedAccount);
+    Account updateCreditLimit(long accountId, BigDecimal requestedCreditLimit);
 
 //to figure out update operation
 }
