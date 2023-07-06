@@ -70,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Account with id" + accountId + " is not found"));
     }
-
+    @Transactional
     @Override
     public Account updateCreditLimit(long accountId, BigDecimal requestedCreditLimit)  {
         Optional<Account> theAccount = accountRepository.findById(accountId);
