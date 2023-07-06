@@ -30,6 +30,16 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         String error=ex.getMessage();
         return buildResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST, error));
     }
+    @ExceptionHandler(AmountExceedBalanceException.class)
+    public ResponseEntity<Object> handleAmountExceedBalanceException(HttpServletRequest req,AmountExceedBalanceException ex ){
+        String error=ex.getMessage();
+        return buildResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST, error));
+    }
+    @ExceptionHandler(TransactionExecutionException.class)
+    public ResponseEntity<Object> handleTransactionExecutionException(HttpServletRequest req,AmountExceedBalanceException ex ){
+        String error=ex.getMessage();
+        return buildResponseEntity(new ErrorResponse(HttpStatus.NOT_IMPLEMENTED, error));
+    }
 
     private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse){
         return new ResponseEntity<Object>(errorResponse,errorResponse.getStatus());

@@ -49,13 +49,13 @@ public class Account {
     private BigDecimal creditLimit;
 
 
-    public Account( String firstName, String lastName, long identifier, long passportNumber, BigDecimal annualIncome) {
+    public Account(String firstName, String lastName, long identifier, long passportNumber, BigDecimal annualIncome) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.identifier = identifier;
         this.passportNumber = passportNumber;
         this.annualIncome = annualIncome;
-        this.availableBalance = BigDecimal.ZERO;
+        this.availableBalance = BigDecimal.valueOf(500);
         this.creditBalance = BigDecimal.ZERO;
         this.depositBalance = BigDecimal.ZERO;
         this.creditLimit = BigDecimal.ZERO;

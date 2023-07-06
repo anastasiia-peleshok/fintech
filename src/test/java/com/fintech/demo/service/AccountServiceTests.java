@@ -58,18 +58,6 @@ public class AccountServiceTests {
     }
 
 
-
-//        account = new Account();
-//        when(accountRepository.findById(account.getId()))
-//                .thenReturn(Optional.of(account));
-//        try {
-//            accountService.saveAccount(account);
-//            fail("Expected IllegalArgumentException to be thrown");
-//        } catch (IllegalArgumentException e) {
-//            assertEquals("Account with id " + account.getId() + " is already exist", e.getMessage());
-//        }
-
-
     @DisplayName("JUnit test for saveAccount method when identifier is already exist")
     @Test
     public void save_account_when_identifier_is_exist_test() {
@@ -81,16 +69,6 @@ public class AccountServiceTests {
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Account with identifier " + account.getIdentifier() + " is already exist");
 
-
-//        account = new Account();
-//        when(accountRepository.existsByIdentifier(account.getIdentifier()))
-//                .thenReturn(true);
-//        try {
-//            accountService.saveAccount(account);
-//            fail("Expected IllegalArgumentException to be thrown");
-//        } catch (IllegalArgumentException e) {
-//            assertEquals("Account with identifier " + account.getIdentifier() + " is already exist", e.getMessage());
-//        }
     }
 
     @DisplayName("JUnit test for saveAccount method when passport is already exist")
@@ -103,17 +81,6 @@ public class AccountServiceTests {
             accountService.saveAccount(account);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Account with  passport number " + account.getPassportNumber() + " is already exist");
-
-//
-//        account = new Account();
-//        when(accountRepository.existsByPassportNumber(account.getPassportNumber()))
-//                .thenReturn(true);
-//        try {
-//          accountService.saveAccount(account);
-//            fail("Expected IllegalArgumentException to be thrown");
-//        } catch (IllegalArgumentException e) {
-//            assertEquals("Account with  passport number " + account.getPassportNumber() + " is already exist", e.getMessage());
-//        }
     }
 
     @DisplayName("JUnit test for getAccount method successfully")
@@ -136,16 +103,6 @@ public class AccountServiceTests {
             accountService.getAccountById(account.getId()).get();
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Account with id" + account.getId() + " is not found");
-
-//
-//        account = new Account();
-//        when(accountRepository.findById(account.getId())).thenReturn(Optional.empty());
-//        try {
-//            accountService.getAccountById(account.getId()).get();
-//            fail("Expected IllegalArgumentException to be thrown");
-//        } catch (IllegalArgumentException e) {
-//            assertEquals("Account with id" + account.getId() + " is not found", e.getMessage());
-//        }
     }
 
     @DisplayName("JUnit test for getAccounts method")
@@ -195,18 +152,6 @@ public class AccountServiceTests {
             accountService.updateAccount(accountId, updatedAccount);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Account with id" + accountId + " is not found");
-
-//
-//        long accountId = 1L;
-//        Account updatedAccount = new Account();
-//
-//        when(accountRepository.findById(accountId)).thenReturn(Optional.empty());
-//        try {
-//            accountService.updateAccount(accountId, updatedAccount);
-//            fail("Expected IllegalArgumentException to be thrown");
-//        } catch (IllegalArgumentException e) {
-//            assertEquals("Account with id" + accountId + " is not found", e.getMessage());
-//        }
     }
 
     @DisplayName("JUnit test for updateCreditLimit method successfully")
@@ -238,18 +183,6 @@ public class AccountServiceTests {
             accountService.updateCreditLimit(accountId, requestedCreditLimit);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Account with id " + accountId + " is not found");
-
-//        long accountId = 1L;
-//        BigDecimal requestedCreditLimit = BigDecimal.valueOf(1000);
-//
-//        when(accountRepository.findById(accountId)).thenReturn(Optional.empty());
-//
-//        try {
-//            accountService.updateCreditLimit(accountId, requestedCreditLimit);
-//            fail("Expected IllegalArgumentException to be thrown");
-//        } catch (IllegalArgumentException e) {
-//            assertEquals("Account with id " + accountId + " is not found", e.getMessage());
-//        }
     }
 
     @DisplayName("JUnit test for updateCreditLimit method when income exceed limit")
@@ -268,13 +201,6 @@ public class AccountServiceTests {
             accountService.updateCreditLimit(accountId, requestedCreditLimit);
         }).isInstanceOf(CreditLimitExceedIncomeException.class)
                 .hasMessageContaining("Credit limit exceeds monthly income. Operation is declined!");
-//
-//        try {
-//            accountService.updateCreditLimit(accountId, requestedCreditLimit);
-//            fail("Expected CreditLimitExceedIncomeException to be thrown");
-//        } catch (CreditLimitExceedIncomeException e) {
-//            assertEquals("Credit limit exceeds monthly income. Operation is declined!", e.getMessage());
-//        }
     }
 
     @DisplayName("JUnit test for deleteAccount method when account is not found")
@@ -286,13 +212,6 @@ public class AccountServiceTests {
             accountService.deleteAccount(accountId);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Account with id" + accountId + " is not found");
-
-//        try {
-//            accountService.deleteAccount(accountId);
-//            fail("Expected IllegalArgumentException to be thrown");
-//        } catch (IllegalArgumentException e) {
-//            assertEquals("Account with id" + accountId + " is not found", e.getMessage());
-//        }
     }
 
     @DisplayName("JUnit test for deleteAccount method successfully")
