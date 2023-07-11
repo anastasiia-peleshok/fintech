@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class AccountRestControllerTest {
+public class AccountRestControllerTest extends  AbstractIntegrationTest {
     @LocalServerPort
     private int port;
     @Autowired
@@ -53,26 +53,26 @@ public class AccountRestControllerTest {
         System.setProperty("spring.datasource.password", mysqlContainer.getPassword());
     }
 
-    @BeforeEach
-    public void setUp() {
-        executeSqlScript("schema.sql");
-        executeSqlScript("data.sql");
-    }
-
-    private void executeSqlScript(String scriptPath) {
-        Resource resource = new ClassPathResource(scriptPath);
-        try (InputStream inputStream = resource.getInputStream()) {
-            String sqlScript = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            String[] queries = sqlScript.split(";");
-
-            for (String query : queries) {
-                jdbcTemplate.execute(query.trim());
-            }
-            System.out.println("Successfully executed Scripts");
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read SQL script: " + scriptPath, e);
-        }
-    }
+//    @BeforeEach
+//    public void setUp() {
+//        executeSqlScript("schema.sql");
+//        executeSqlScript("data.sql");
+//    }
+//
+//    private void executeSqlScript(String scriptPath) {
+//        Resource resource = new ClassPathResource(scriptPath);
+//        try (InputStream inputStream = resource.getInputStream()) {
+//            String sqlScript = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+//            String[] queries = sqlScript.split(";");
+//
+//            for (String query : queries) {
+//                jdbcTemplate.execute(query.trim());
+//            }
+//            System.out.println("Successfully executed Scripts");
+//        } catch (IOException e) {
+//            throw new UncheckedIOException("Failed to read SQL script: " + scriptPath, e);
+//        }
+//    }
 
     @Test
     public void get_account_by_id_when_id_is_present() {

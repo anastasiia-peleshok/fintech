@@ -5,18 +5,20 @@ import com.fintech.demo.dao.TransactionRepository;
 import com.fintech.demo.entity.Account;
 import com.fintech.demo.entity.Transaction;
 import com.fintech.demo.exceptions.AmountExceedBalanceException;
-import com.fintech.demo.exceptions.TransactionExecutionException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
-
 @Service
-
+@PropertySource("src/main/resources/application.properties")
 public class TransactionServiceImpl implements TransactionService {
     private AccountRepository accountRepository;
     private TransactionRepository transactionRepository;
+    @Value("${commissionPercent}")
+    private double commissionPercent;
 
     @Autowired
     public TransactionServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
@@ -41,14 +43,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = new Transaction(accountSenderId, accountReceiverId, description, amount);
         senderAccount.setAvailableBalance(senderAccount.getAvailableBalance().subtract(amount));
-        receiverAccount.setAvailableBalance(receiverAccount.getAvailableBalance().add(amount.subtract(transaction.getCommission())));
+        receiverAccount.setAvailableBalance(receiverAccount.getAvailableBalance().add(amount).subtract(calculateCommission(amount)));
 
-        try {
              Transaction savedTransaction = transactionRepository.save(transaction);
             return savedTransaction;
-        } catch (Exception e) {
-            throw new TransactionExecutionException("Failed to execute transaction");
-        }
+
+    }
+    private  BigDecimal calculateCommission(BigDecimal amount) {
+        BigDecimal commission =amount.multiply(BigDecimal.valueOf(commissionPercent)).stripTrailingZeros();
+        return commission;
     }
 }
 

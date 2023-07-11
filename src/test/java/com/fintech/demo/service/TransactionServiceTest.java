@@ -121,6 +121,8 @@ public class TransactionServiceTest {
         Transaction savedTransaction = transactionService.executeTransaction(accountSenderId, accountReceiverId, description, amount);
 
         assertEquals(transaction, savedTransaction);
+
+        assertEquals(BigDecimal.valueOf(296), receiverAccount.getAvailableBalance());
     }
 
 }

@@ -35,13 +35,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class TransactionRestControllerTest {
+public class TransactionRestControllerTest extends AbstractIntegrationTest {
     @LocalServerPort
     private int port;
     @Autowired
     private TestRestTemplate restTemplate;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+//    @Autowired
+//    private JdbcTemplate jdbcTemplate;
 
     @Container
     private static final MySQLContainer mysqlContainer = new MySQLContainer("mysql:latest")
@@ -57,26 +57,26 @@ public class TransactionRestControllerTest {
         System.setProperty("spring.datasource.password", mysqlContainer.getPassword());
     }
 
-    @BeforeEach
-    public void setUp() {
-        executeSqlScript("schema.sql");
-        executeSqlScript("data.sql");
-    }
+//    @BeforeEach
+//    public void setUp() {
+//        executeSqlScript("schema.sql");
+//        executeSqlScript("data.sql");
+//    }
 
-    private void executeSqlScript(String scriptPath) {
-        Resource resource = new ClassPathResource(scriptPath);
-        try (InputStream inputStream = resource.getInputStream()) {
-            String sqlScript = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            String[] queries = sqlScript.split(";");
-
-            for (String query : queries) {
-                jdbcTemplate.execute(query.trim());
-            }
-            System.out.println("Successfully executed Scripts");
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read SQL script: " + scriptPath, e);
-        }
-    }
+//    private void executeSqlScript(String scriptPath) {
+//        Resource resource = new ClassPathResource(scriptPath);
+//        try (InputStream inputStream = resource.getInputStream()) {
+//            String sqlScript = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+//            String[] queries = sqlScript.split(";");
+//
+//            for (String query : queries) {
+//                jdbcTemplate.execute(query.trim());
+//            }
+//            System.out.println("Successfully executed Scripts");
+//        } catch (IOException e) {
+//            throw new UncheckedIOException("Failed to read SQL script: " + scriptPath, e);
+//        }
+//    }
 
     @Test
     public void execute_transaction_when_balance_bigger_amount() {
@@ -101,10 +101,6 @@ public class TransactionRestControllerTest {
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        Transaction transaction = response.getBody();
-
-        assertEquals(BigDecimal.valueOf(4), transaction.getCommission());
 
     }
 

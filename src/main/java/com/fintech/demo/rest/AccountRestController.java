@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping("/accounts/")
 @RequiredArgsConstructor
 public class AccountRestController {
-
     private final AccountService accountService;
 
     @GetMapping(value = "{accountId}")

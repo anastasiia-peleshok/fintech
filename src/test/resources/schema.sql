@@ -21,6 +21,5 @@ CREATE TABLE transaction (
                              description VARCHAR(255) NOT NULL,
                              amount DECIMAL(19, 2) NOT NULL,
                              stamp TIMESTAMP NOT NULL,
-                             commission DECIMAL(19, 2) NOT NULL,
                              PRIMARY KEY (id)
 );
