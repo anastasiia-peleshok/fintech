@@ -1,7 +1,5 @@
 package com.fintech.demo.service;
-
 import com.fintech.demo.entity.Transaction;
-
 import java.math.BigDecimal;
 
 public interface TransactionService {

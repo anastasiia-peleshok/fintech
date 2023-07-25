@@ -1,23 +1,17 @@
 package com.fintech.demo.service;
-
 import com.fintech.demo.dao.AccountRepository;
 import com.fintech.demo.entity.Account;
 import com.fintech.demo.exceptions.CreditLimitExceedIncomeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.util.AssertionErrors.fail;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.List;
 import java.math.BigDecimal;
 import java.util.Optional;

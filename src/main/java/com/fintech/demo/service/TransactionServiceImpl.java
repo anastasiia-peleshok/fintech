@@ -1,32 +1,27 @@
 package com.fintech.demo.service;
 
+import com.fintech.demo.configuration.ApplicationProperties;
 import com.fintech.demo.dao.AccountRepository;
 import com.fintech.demo.dao.TransactionRepository;
 import com.fintech.demo.entity.Account;
 import com.fintech.demo.entity.Transaction;
 import com.fintech.demo.exceptions.AmountExceedBalanceException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 @Service
-@PropertySource("src/main/resources/application.properties")
+@RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
-    private AccountRepository accountRepository;
-    private TransactionRepository transactionRepository;
-    @Value("${commissionPercent}")
-    private double commissionPercent;
+    private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
+    private final ApplicationProperties applicationProperties;
 
-    @Autowired
-    public TransactionServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
-
-        this.accountRepository = accountRepository;
-        this.transactionRepository = transactionRepository;
+    private  BigDecimal calculateCommission(BigDecimal amount) {
+        BigDecimal commission =amount.multiply(BigDecimal.valueOf(applicationProperties.getCommissionPercent())).stripTrailingZeros();
+        return commission;
     }
-
     @Transactional
     @Override
     public Transaction executeTransaction(long accountSenderId, long accountReceiverId, String description, BigDecimal amount) {
@@ -41,17 +36,13 @@ public class TransactionServiceImpl implements TransactionService {
             throw new AmountExceedBalanceException("Amount " + amount + " exceeds account balance");
         }
 
-        Transaction transaction = new Transaction(accountSenderId, accountReceiverId, description, amount);
+        Transaction transaction = new Transaction(senderAccount, receiverAccount, description, amount);
         senderAccount.setAvailableBalance(senderAccount.getAvailableBalance().subtract(amount));
         receiverAccount.setAvailableBalance(receiverAccount.getAvailableBalance().add(amount).subtract(calculateCommission(amount)));
 
-             Transaction savedTransaction = transactionRepository.save(transaction);
-            return savedTransaction;
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return savedTransaction;
 
     }
-    private  BigDecimal calculateCommission(BigDecimal amount) {
-        BigDecimal commission =amount.multiply(BigDecimal.valueOf(commissionPercent)).stripTrailingZeros();
-        return commission;
-    }
+
 }
-

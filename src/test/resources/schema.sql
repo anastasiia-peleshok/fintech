@@ -1,4 +1,6 @@
+DROP TABLE IF EXISTS transaction_table CASCADE;
 DROP TABLE IF EXISTS account;
+
 
 CREATE TABLE account (
                          id BIGINT NOT NULL Auto_increment,
@@ -13,13 +15,16 @@ CREATE TABLE account (
                          credit_limit DECIMAL(19, 2) DEFAULT 0.00,
                          PRIMARY KEY (id)
 );
-DROP TABLE IF EXISTS transaction;
-CREATE TABLE transaction (
+
+CREATE TABLE transaction_table (
                              id BIGINT NOT NULL AUTO_INCREMENT,
                              account_sender_id BIGINT NOT NULL,
                              account_receiver_id BIGINT NOT NULL,
                              description VARCHAR(255) NOT NULL,
                              amount DECIMAL(19, 2) NOT NULL,
                              stamp TIMESTAMP NOT NULL,
-                             PRIMARY KEY (id)
+                             PRIMARY KEY (id),
+                             FOREIGN KEY account_sender (account_sender_id) REFERENCES account(id) ON DELETE CASCADE,
+                             FOREIGN KEY account_receiver (account_receiver_id) REFERENCES account(id) ON DELETE CASCADE
+
 );
