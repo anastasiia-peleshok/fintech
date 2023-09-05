@@ -4,14 +4,10 @@ import com.fintech.demo.dao.AccountRepository;
 import com.fintech.demo.entity.Account;
 import com.fintech.demo.exceptions.CreditLimitExceedIncomeException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Account with id" + accountId + " is not found"));
     }
-
+    @Transactional
     @Override
     public Account updateCreditLimit(long accountId, BigDecimal requestedCreditLimit)  {
         Optional<Account> theAccount = accountRepository.findById(accountId);
